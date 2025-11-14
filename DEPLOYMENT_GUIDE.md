@@ -33,7 +33,7 @@ git push -u origin main
 
 2. In PythonAnywhere Bash Console:
 ```bash
-git clone https://github.com/yourusername/blog-site-django.git
+    git clone https://github.com/yourusername/blog-site-django.git
 cd blog-site-django
 ```
 
@@ -61,8 +61,12 @@ Add this file to your project root:
 ```
 Django==5.2.8
 Pillow==10.1.0
-django-crispy-forms==2.1
-crispy-bootstrap5==2.0.2
+django-crispy-forms==2.3
+crispy-bootstrap5==2024.10
+django-filter==24.1
+python-decouple==3.8
+psycopg2-binary==2.9.9
+gunicorn==21.2.0
 ```
 
 Or generate automatically:
@@ -72,46 +76,129 @@ pip freeze > requirements.txt
 
 ### Step 5: Configure Django Settings
 
-Edit `blog_project/settings.py`:
+Edit `blog_project/settings.py` with your k4shaf username:
 
 ```python
+import os
+from pathlib import Path
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+# ⚠️ IMPORTANT: Generate a new SECRET_KEY for production
+# Run in shell: from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())
+SECRET_KEY = 'django-insecure-change-this-to-generated-key'
+
 # Set DEBUG to False for production
 DEBUG = False
 
 # Add your domain
-ALLOWED_HOSTS = ['yourusername.pythonanywhere.com', 'www.yourusername.pythonanywhere.com']
+ALLOWED_HOSTS = ['k4shaf.pythonanywhere.com', 'www.k4shaf.pythonanywhere.com', 'localhost', '127.0.0.1']
 
-# Database Configuration
+INSTALLED_APPS = [
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    
+    # Third-party apps
+    'crispy_forms',
+    'crispy_bootstrap5',
+    'django_filters',
+    
+    # Local apps
+    'blog.apps.BlogConfig',
+    'accounts.apps.AccountsConfig',
+]
+
+MIDDLEWARE = [
+    'django.middleware.security.SecurityMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'blog.middleware.UserActivityMiddleware',
+]
+
+ROOT_URLCONF = 'blog_project.urls'
+
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.media',
+            ],
+        },
+    },
+]
+
+WSGI_APPLICATION = 'blog_project.wsgi.application'
+
+# ✅ CORRECT DATABASE CONFIGURATION
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': '/home/yourusername/blog-site-django/db.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
 
-# Static files
-STATIC_ROOT = '/home/yourusername/blog-site-django/static'
+AUTH_PASSWORD_VALIDATORS = [
+    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
+]
+
+LANGUAGE_CODE = 'en-us'
+TIME_ZONE = 'UTC'
+USE_I18N = True
+USE_TZ = True
+
+# ✅ CORRECT STATIC FILES CONFIGURATION
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATICFILES_DIRS = []
 
-# Media files
-MEDIA_ROOT = '/home/yourusername/blog-site-django/media'
+# ✅ CORRECT MEDIA FILES CONFIGURATION
 MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-# Email Configuration (Optional)
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Crispy Forms
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
+CRISPY_TEMPLATE_PACK = "bootstrap5"
+
+# Login URLs
+LOGIN_URL = 'accounts:login'
+LOGIN_REDIRECT_URL = 'blog:home'
+LOGOUT_REDIRECT_URL = 'blog:home'
+
+# Email Configuration
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'your-email@gmail.com'
-EMAIL_HOST_PASSWORD = 'your-app-password'  # Use app-specific password for Gmail
-DEFAULT_FROM_EMAIL = 'your-email@gmail.com'
+EMAIL_HOST_USER = 'your-email@gmail.com'  # Update this
+EMAIL_HOST_PASSWORD = 'your-app-password'  # Update this
+DEFAULT_FROM_EMAIL = 'your-email@gmail.com'  # Update this
 
-# Security Settings
-CSRF_COOKIE_SECURE = True
-SESSION_COOKIE_SECURE = True
-SECURE_SSL_REDIRECT = True
-SECURE_HSTS_SECONDS = 31536000
-SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+# Security Settings for Production
+CSRF_COOKIE_SECURE = False  # Set to True when using HTTPS
+SESSION_COOKIE_SECURE = False  # Set to True when using HTTPS
+SECURE_SSL_REDIRECT = False  # Set to True when using HTTPS
+SECURE_BROWSER_XSS_FILTER = True
+X_FRAME_OPTIONS = 'DENY'
 ```
 
 ### Step 6: Run Migrations
@@ -121,7 +208,7 @@ In PythonAnywhere Bash console:
 ```bash
 cd ~/blog-site-django
 workon KBlog
-python manage.py makemigrations
+mkdir -p static media logs
 python manage.py migrate
 python manage.py collectstatic --noinput
 ```
@@ -152,7 +239,7 @@ Follow the prompts to create your admin account.
 import os
 import sys
 
-path = '/home/yourusername/blog-site-django'
+path = '/home/k4shaf/blog-site-django'
 if path not in sys.path:
     sys.path.append(path)
 
@@ -166,13 +253,13 @@ application = get_wsgi_application()
 
 In the "Web" tab, set up static files mapping:
 
-1. URL: `/static/`
-2. Directory: `/home/yourusername/blog-site-django/static`
+**Static Files:**
+- URL: `/static/`
+- Directory: `/home/k4shaf/blog-site-django/static`
 
-And for media files:
-
-1. URL: `/media/`
-2. Directory: `/home/yourusername/blog-site-django/media`
+**Media Files:**
+- URL: `/media/`
+- Directory: `/home/k4shaf/blog-site-django/media`
 
 ### Step 11: Set Environment Variables
 
@@ -198,7 +285,7 @@ if env_path.exists():
 ### Step 12: Reload Web App
 
 1. In "Web" tab, click "Reload" button
-2. Visit `yourusername.pythonanywhere.com`
+2. Visit `k4shaf.pythonanywhere.com` 🎉
 
 ## Troubleshooting
 
@@ -240,7 +327,7 @@ chmod 777 ~/blog-site-django/media
 
 Update `settings.py`:
 ```python
-ALLOWED_HOSTS = ['yourusername.pythonanywhere.com', 'www.yourusername.pythonanywhere.com']
+ALLOWED_HOSTS = ['k4shaf.pythonanywhere.com', 'www.k4shaf.pythonanywhere.com', 'localhost', '127.0.0.1']
 ```
 
 Reload the web app.
