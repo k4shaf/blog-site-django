@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+
+{% block title %}Become an Author - KBlog{% endblock %}
+
+{% block content %}
+<div class="container-lg my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+            <!-- Hero Section -->
+            <div style="text-align: center; margin-bottom: 3rem;">
+                <h1 style="font-size: 2.5rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 1rem;">
+                    Become an Author
+                </h1>
+                <p style="font-size: 1.1rem; color: #999; letter-spacing: 0.5px;">
+                    Join our community of writers and share your voice with the world.
+                </p>
+            </div>
+
+            <!-- Benefits Section -->
+            <div style="background-color: #fff; padding: 2rem; margin-bottom: 2rem; border: 1px solid var(--light-gray);">
+                <h3 style="font-size: 1.1rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 1.5rem; font-weight: 700;">
+                    What You Get As an Author
+                </h3>
+                <ul style="list-style: none; padding: 0;">
+                    <li style="padding: 0.8rem 0; border-bottom: 1px solid var(--light-gray); color: #666;">
+                        <i class="fas fa-check" style="color: var(--accent); margin-right: 0.8rem; font-weight: 700;"></i>
+                        Create and publish blog posts
+                    </li>
+                    <li style="padding: 0.8rem 0; border-bottom: 1px solid var(--light-gray); color: #666;">
+                        <i class="fas fa-check" style="color: var(--accent); margin-right: 0.8rem; font-weight: 700;"></i>
+                        Edit and delete your own posts
+                    </li>
+                    <li style="padding: 0.8rem 0; border-bottom: 1px solid var(--light-gray); color: #666;">
+                        <i class="fas fa-check" style="color: var(--accent); margin-right: 0.8rem; font-weight: 700;"></i>
+                        Moderate comments on your posts
+                    </li>
+                    <li style="padding: 0.8rem 0; border-bottom: 1px solid var(--light-gray); color: #666;">
+                        <i class="fas fa-check" style="color: var(--accent); margin-right: 0.8rem; font-weight: 700;"></i>
+                        Track post statistics and views
+                    </li>
+                    <li style="padding: 0.8rem 0; color: #666;">
+                        <i class="fas fa-check" style="color: var(--accent); margin-right: 0.8rem; font-weight: 700;"></i>
+                        Access your personal author dashboard
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Form Section -->
+            <div style="background-color: #fff; padding: 2rem; border: 1px solid var(--light-gray);">
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <div style="background-color: var(--bg-color); padding: 1.5rem; margin-bottom: 2rem; text-align: center;">
+                        <p style="font-size: 0.95rem; color: #666; margin-bottom: 0;">
+                            <i class="fas fa-info-circle" style="color: var(--accent); margin-right: 0.5rem;"></i>
+                            Your request will be reviewed by our admin team within 24 hours.
+                        </p>
+                    </div>
+
+                    <div style="margin-bottom: 2rem;">
+                        <button type="submit" style="
+                            width: 100%;
+                            background-color: #000;
+                            color: #fff;
+                            border: 2px solid #000;
+                            padding: 1rem;
+                            text-transform: uppercase;
+                            font-weight: 600;
+                            letter-spacing: 1px;
+                            font-size: 0.95rem;
+                            cursor: pointer;
+                            transition: all 0.3s ease;
+                        " onmouseover="this.style.backgroundColor='var(--accent)'; this.style.borderColor='var(--accent)'; this.style.color='#000';"
+                           onmouseout="this.style.backgroundColor='#000'; this.style.borderColor='#000'; this.style.color='#fff';">
+                            REQUEST AUTHOR ROLE
+                        </button>
+                    </div>
+
+                    <hr style="border-color: var(--light-gray);">
+
+                    <div style="text-align: center; margin-top: 2rem;">
+                        <p style="font-size: 0.9rem; color: #999;">
+                            Already requested?
+                            <a href="{% url 'accounts:request_status' %}" style="
+                                color: var(--accent);
+                                text-decoration: none;
+                                font-weight: 600;
+                                transition: color 0.3s ease;
+                            ">Check your status</a>
+                        </p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

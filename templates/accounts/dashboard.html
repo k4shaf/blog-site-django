@@ -1,0 +1,127 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - KBlog{% endblock %}
+
+{% block content %}
+<!-- Statistics -->
+<div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 3rem;">
+    <div style="background: white; border: 1px solid #e8e8e8; padding: 1.5rem; text-align: center;">
+        <p style="font-size: 1.8rem; font-weight: 600; color: #333; margin: 0;">{{ stats.total_posts }}</p>
+        <p style="font-size: 0.85rem; color: #999; text-transform: uppercase; letter-spacing: 0.5px; margin: 0;">Total Posts</p>
+    </div>
+    <div style="background: white; border: 1px solid #e8e8e8; padding: 1.5rem; text-align: center;">
+        <p style="font-size: 1.8rem; font-weight: 600; color: #333; margin: 0;">{{ stats.published_posts }}</p>
+        <p style="font-size: 0.85rem; color: #999; text-transform: uppercase; letter-spacing: 0.5px; margin: 0;">Published</p>
+    </div>
+    <div style="background: white; border: 1px solid #e8e8e8; padding: 1.5rem; text-align: center;">
+        <p style="font-size: 1.8rem; font-weight: 600; color: #333; margin: 0;">{{ stats.draft_posts }}</p>
+        <p style="font-size: 0.85rem; color: #999; text-transform: uppercase; letter-spacing: 0.5px; margin: 0;">Drafts</p>
+    </div>
+    <div style="background: white; border: 1px solid #e8e8e8; padding: 1.5rem; text-align: center;">
+        <p style="font-size: 1.8rem; font-weight: 600; color: #333; margin: 0;">{{ stats.total_views }}</p>
+        <p style="font-size: 0.85rem; color: #999; text-transform: uppercase; letter-spacing: 0.5px; margin: 0;">Total Views</p>
+    </div>
+</div>
+
+<!-- Action Buttons -->
+<div style="display: flex; gap: 1rem; margin-bottom: 3rem;">
+    <a href="{% url 'blog:post_create' %}" style="background: #333; color: white; padding: 0.7rem 1.5rem; border: 1px solid #333; text-decoration: none; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px; transition: all 0.3s ease;">
+        + Create New Post
+    </a>
+    <a href="{% url 'accounts:profile' %}" style="background: white; color: #333; padding: 0.7rem 1.5rem; border: 1px solid #333; text-decoration: none; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px; transition: all 0.3s ease;">
+        View Profile
+    </a>
+</div>
+
+<!-- Posts List -->
+<div style="background: white; border: 1px solid #e8e8e8; overflow: hidden;">
+    <div style="background: #fafafa; border-bottom: 1px solid #e8e8e8; padding: 1.5rem; border-left: 4px solid #d4af37;">
+        <h2 style="font-family: 'Georgia', serif; font-size: 1rem; text-transform: uppercase; letter-spacing: 0.5px; margin: 0; color: #333;">
+            Your Articles
+        </h2>
+    </div>
+
+    {% if posts %}
+        <div style="overflow-x: auto;">
+            <table style="width: 100%; border-collapse: collapse;">
+                <thead>
+                    <tr style="border-bottom: 2px solid #e8e8e8; background: #fafafa;">
+                        <th style="text-align: left; padding: 1rem; font-weight: 600; color: #333; font-size: 0.9rem;">Title</th>
+                        <th style="text-align: center; padding: 1rem; font-weight: 600; color: #333; font-size: 0.9rem;">Status</th>
+                        <th style="text-align: center; padding: 1rem; font-weight: 600; color: #333; font-size: 0.9rem;">Views</th>
+                        <th style="text-align: center; padding: 1rem; font-weight: 600; color: #333; font-size: 0.9rem;">Comments</th>
+                        <th style="text-align: center; padding: 1rem; font-weight: 600; color: #333; font-size: 0.9rem;">Published</th>
+                        <th style="text-align: center; padding: 1rem; font-weight: 600; color: #333; font-size: 0.9rem;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for post in posts %}
+                        <tr style="border-bottom: 1px solid #e8e8e8;">
+                            <td style="padding: 1rem; text-align: left;">
+                                <a href="{{ post.get_absolute_url }}" style="color: #333; text-decoration: none; font-weight: 500;">
+                                    {{ post.title|truncatewords:8 }}
+                                </a>
+                            </td>
+                            <td style="padding: 1rem; text-align: center;">
+                                {% if post.is_published %}
+                                    <span style="font-size: 0.75rem; letter-spacing: 0.5px; text-transform: uppercase; color: #333;">● {{ post.get_status_display }}</span>
+                                {% else %}
+                                    <span style="font-size: 0.75rem; letter-spacing: 0.5px; text-transform: uppercase; color: #d4af37;">○ {{ post.get_status_display }}</span>
+                                {% endif %}
+                            </td>
+                            <td style="padding: 1rem; text-align: center; color: #666; font-size: 0.9rem;">
+                                {{ post.views_count }}
+                            </td>
+                            <td style="padding: 1rem; text-align: center; color: #666; font-size: 0.9rem;">
+                                {{ post.comments.count }}
+                            </td>
+                            <td style="padding: 1rem; text-align: center; color: #999; font-size: 0.85rem;">
+                                {{ post.published_at|date:"d M Y"|default:"—" }}
+                            </td>
+                            <td style="padding: 1rem; text-align: center;">
+                                <div style="display: flex; gap: 0.5rem; justify-content: center;">
+                                    <a href="{{ post.get_absolute_url }}" title="View" style="color: #333; border: 1px solid #e8e8e8; padding: 0.4rem 0.6rem; text-decoration: none; font-size: 0.8rem; transition: all 0.3s ease;">👁</a>
+                                    <a href="{% url 'blog:post_edit' post.slug %}" title="Edit" style="color: #333; border: 1px solid #e8e8e8; padding: 0.4rem 0.6rem; text-decoration: none; font-size: 0.8rem; transition: all 0.3s ease;">✎</a>
+                                    <a href="{% url 'blog:post_delete' post.slug %}" title="Delete" onclick="return confirm('Delete this post?');" style="color: #d4af37; border: 1px solid #e8e8e8; padding: 0.4rem 0.6rem; text-decoration: none; font-size: 0.8rem; transition: all 0.3s ease;">🗑</a>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div style="text-align: center; padding: 3rem; color: #999;">
+            <p style="font-size: 1rem; margin: 0 0 1rem 0;">You haven't written any posts yet.</p>
+            <a href="{% url 'blog:post_create' %}" style="display: inline-block; background: #333; color: white; padding: 0.6rem 1.5rem; text-decoration: none; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px; transition: all 0.3s ease;">
+                Create Your First Post
+            </a>
+        </div>
+    {% endif %}
+</div>
+
+<!-- Pagination -->
+{% if is_paginated %}
+    <nav style="text-align: center; margin: 3rem 0;">
+        <div style="display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap;">
+            {% if page_obj.has_previous %}
+                <a href="?page=1" style="display: inline-block; color: #333; border: 1px solid #e8e8e8; padding: 0.5rem 0.8rem; text-decoration: none; font-size: 0.9rem; transition: all 0.3s ease;">First</a>
+                <a href="?page={{ page_obj.previous_page_number }}" style="display: inline-block; color: #333; border: 1px solid #e8e8e8; padding: 0.5rem 0.8rem; text-decoration: none; font-size: 0.9rem; transition: all 0.3s ease;">←</a>
+            {% endif %}
+
+            {% for num in page_obj.paginator.page_range %}
+                {% if page_obj.number == num %}
+                    <span style="display: inline-block; color: white; background: #333; border: 1px solid #333; padding: 0.5rem 0.8rem; font-size: 0.9rem;">{{ num }}</span>
+                {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                    <a href="?page={{ num }}" style="display: inline-block; color: #333; border: 1px solid #e8e8e8; padding: 0.5rem 0.8rem; text-decoration: none; font-size: 0.9rem; transition: all 0.3s ease;">{{ num }}</a>
+                {% endif %}
+            {% endfor %}
+
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}" style="display: inline-block; color: #333; border: 1px solid #e8e8e8; padding: 0.5rem 0.8rem; text-decoration: none; font-size: 0.9rem; transition: all 0.3s ease;">→</a>
+                <a href="?page={{ page_obj.paginator.num_pages }}" style="display: inline-block; color: #333; border: 1px solid #e8e8e8; padding: 0.5rem 0.8rem; text-decoration: none; font-size: 0.9rem; transition: all 0.3s ease;">Last</a>
+            {% endif %}
+        </div>
+    </nav>
+{% endif %}
+{% endblock %}

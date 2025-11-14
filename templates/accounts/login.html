@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+
+{% block title %}Login - KBlog{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-5">
+        <!-- Login Form -->
+        <div style="background: white; border: 1px solid #e8e8e8; padding: 3rem 2rem; margin-bottom: 2rem;">
+            <h1 style="font-family: 'Georgia', serif; font-size: 1.8rem; text-transform: uppercase; letter-spacing: 1px; text-align: center; margin-bottom: 2rem; color: #333;">
+                Sign In
+            </h1>
+
+            {% if form.non_field_errors %}
+                <div style="background: #fde6e6; border: 1px solid #e6d4d4; border-left: 4px solid #d4af37; padding: 1rem; margin-bottom: 1.5rem; color: #333;">
+                    {{ form.non_field_errors }}
+                </div>
+            {% endif %}
+
+            <form method="post" novalidate>
+                {% csrf_token %}
+
+                <!-- Username/Email -->
+                <div style="margin-bottom: 1.5rem;">
+                    <label for="{{ form.username.id_for_label }}" style="display: block; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; font-size: 0.85rem; color: #333; margin-bottom: 0.5rem;">
+                        Username or Email <span style="color: #d4af37;">*</span>
+                    </label>
+                    {{ form.username }}
+                    {% if form.username.errors %}
+                        <div style="color: #d4af37; font-size: 0.85rem; margin-top: 0.3rem;">{{ form.username.errors }}</div>
+                    {% endif %}
+                </div>
+
+                <!-- Password -->
+                <div style="margin-bottom: 1.5rem;">
+                    <label for="{{ form.password.id_for_label }}" style="display: block; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; font-size: 0.85rem; color: #333; margin-bottom: 0.5rem;">
+                        Password <span style="color: #d4af37;">*</span>
+                    </label>
+                    {{ form.password }}
+                    {% if form.password.errors %}
+                        <div style="color: #d4af37; font-size: 0.85rem; margin-top: 0.3rem;">{{ form.password.errors }}</div>
+                    {% endif %}
+                </div>
+
+                <!-- Remember Me -->
+                <div style="display: flex; align-items: center; margin-bottom: 1.5rem;">
+                    {{ form.remember_me }}
+                    <label for="{{ form.remember_me.id_for_label }}" style="margin-left: 0.5rem; color: #333; font-size: 0.9rem; cursor: pointer;">
+                        Remember me
+                    </label>
+                </div>
+
+                <!-- Submit -->
+                <button type="submit" style="width: 100%; background: #333; color: white; border: 1px solid #333; padding: 0.8rem; cursor: pointer; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px; transition: all 0.3s ease; margin-bottom: 1rem;">
+                    Sign In
+                </button>
+
+                <!-- Register Link -->
+                <p style="text-align: center; color: #666; font-size: 0.9rem; margin: 1rem 0;">
+                    New to KBlog?
+                    <a href="{% url 'accounts:register' %}" style="color: #d4af37; text-decoration: none; font-weight: 500;">Create an account</a>
+                </p>
+            </form>
+        </div>
+
+        <!-- Info Box -->
+        <aside style="background: #fafafa; border: 1px solid #e8e8e8; border-left: 4px solid #d4af37; padding: 1.5rem;">
+            <h3 style="font-family: 'Georgia', serif; font-size: 0.95rem; text-transform: uppercase; letter-spacing: 0.5px; margin: 0 0 0.8rem 0; color: #333;">
+                🔒 Secure Access
+            </h3>
+            <p style="color: #666; font-size: 0.85rem; line-height: 1.5; margin: 0;">
+                Your login credentials are encrypted and protected. We never share your information with third parties.
+            </p>
+        </aside>
+    </div>
+</div>
+
+<style>
+    input[type="text"],
+    input[type="password"],
+    input[type="email"] {
+        width: 100%;
+        border: 1px solid #e8e8e8;
+        padding: 0.7rem;
+        font-family: Georgia, serif;
+        font-size: 1rem;
+        color: #333;
+        background: white;
+        transition: border-color 0.3s ease;
+    }
+
+    input[type="text"]:focus,
+    input[type="password"]:focus,
+    input[type="email"]:focus {
+        outline: none;
+        border-color: #d4af37;
+        box-shadow: none;
+    }
+
+    input[type="checkbox"] {
+        cursor: pointer;
+    }
+</style>
+{% endblock %}

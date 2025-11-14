@@ -1,0 +1,147 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Register - KBlog{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-5">
+        <!-- Registration Form -->
+        <div style="background: white; border: 1px solid #e8e8e8; padding: 3rem 2rem; margin-bottom: 2rem;">
+            <h1 style="font-family: 'Georgia', serif; font-size: 1.8rem; text-transform: uppercase; letter-spacing: 1px; text-align: center; margin-bottom: 2rem; color: #333;">
+                Create Account
+            </h1>
+
+            {% if form.non_field_errors %}
+                <div style="background: #fde6e6; border: 1px solid #e6d4d4; border-left: 4px solid #d4af37; padding: 1rem; margin-bottom: 1.5rem; color: #333;">
+                    {{ form.non_field_errors }}
+                </div>
+            {% endif %}
+
+            <form method="post" novalidate>
+                {% csrf_token %}
+
+                <!-- Username -->
+                <div style="margin-bottom: 1.5rem;">
+                    <label for="{{ form.username.id_for_label }}" style="display: block; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; font-size: 0.85rem; color: #333; margin-bottom: 0.5rem;">
+                        Username <span style="color: #d4af37;">*</span>
+                    </label>
+                    {{ form.username }}
+                    {% if form.username.errors %}
+                        <div style="color: #d4af37; font-size: 0.85rem; margin-top: 0.3rem;">{{ form.username.errors }}</div>
+                    {% endif %}
+                    <small style="display: block; color: #999; font-size: 0.8rem; margin-top: 0.3rem;">150 characters max. Letters, digits, and @/./+/-/_ only.</small>
+                </div>
+
+                <!-- Email -->
+                <div style="margin-bottom: 1.5rem;">
+                    <label for="{{ form.email.id_for_label }}" style="display: block; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; font-size: 0.85rem; color: #333; margin-bottom: 0.5rem;">
+                        Email Address <span style="color: #d4af37;">*</span>
+                    </label>
+                    {{ form.email }}
+                    {% if form.email.errors %}
+                        <div style="color: #d4af37; font-size: 0.85rem; margin-top: 0.3rem;">{{ form.email.errors }}</div>
+                    {% endif %}
+                </div>
+
+                <!-- Name Fields -->
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem;">
+                    <div>
+                        <label for="{{ form.first_name.id_for_label }}" style="display: block; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; font-size: 0.85rem; color: #333; margin-bottom: 0.5rem;">
+                            First Name
+                        </label>
+                        {{ form.first_name }}
+                        {% if form.first_name.errors %}
+                            <div style="color: #d4af37; font-size: 0.85rem; margin-top: 0.3rem;">{{ form.first_name.errors }}</div>
+                        {% endif %}
+                    </div>
+                    <div>
+                        <label for="{{ form.last_name.id_for_label }}" style="display: block; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; font-size: 0.85rem; color: #333; margin-bottom: 0.5rem;">
+                            Last Name
+                        </label>
+                        {{ form.last_name }}
+                        {% if form.last_name.errors %}
+                            <div style="color: #d4af37; font-size: 0.85rem; margin-top: 0.3rem;">{{ form.last_name.errors }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Password -->
+                <div style="margin-bottom: 1rem;">
+                    <label for="{{ form.password1.id_for_label }}" style="display: block; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; font-size: 0.85rem; color: #333; margin-bottom: 0.5rem;">
+                        Password <span style="color: #d4af37;">*</span>
+                    </label>
+                    {{ form.password1 }}
+                    {% if form.password1.errors %}
+                        <div style="color: #d4af37; font-size: 0.85rem; margin-top: 0.3rem;">{{ form.password1.errors }}</div>
+                    {% endif %}
+                    <ul style="font-size: 0.8rem; color: #999; margin: 0.5rem 0 0 0; padding-left: 1rem;">
+                        <li>At least 8 characters</li>
+                        <li>Not a common password</li>
+                        <li>Mix of letters and numbers</li>
+                    </ul>
+                </div>
+
+                <!-- Confirm Password -->
+                <div style="margin-bottom: 1.5rem;">
+                    <label for="{{ form.password2.id_for_label }}" style="display: block; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; font-size: 0.85rem; color: #333; margin-bottom: 0.5rem;">
+                        Confirm Password <span style="color: #d4af37;">*</span>
+                    </label>
+                    {{ form.password2 }}
+                    {% if form.password2.errors %}
+                        <div style="color: #d4af37; font-size: 0.85rem; margin-top: 0.3rem;">{{ form.password2.errors }}</div>
+                    {% endif %}
+                    <small style="display: block; color: #999; font-size: 0.8rem; margin-top: 0.3rem;">Re-enter your password</small>
+                </div>
+
+                <!-- Submit -->
+                <button type="submit" style="width: 100%; background: #333; color: white; border: 1px solid #333; padding: 0.8rem; cursor: pointer; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px; transition: all 0.3s ease; margin-bottom: 1rem;">
+                    Create Account
+                </button>
+
+                <!-- Login Link -->
+                <p style="text-align: center; color: #666; font-size: 0.9rem; margin: 1rem 0;">
+                    Already a member?
+                    <a href="{% url 'accounts:login' %}" style="color: #d4af37; text-decoration: none; font-weight: 500;">Sign in</a>
+                </p>
+            </form>
+        </div>
+
+        <!-- Why Register -->
+        <aside style="background: #fafafa; border: 1px solid #e8e8e8; border-left: 4px solid #d4af37; padding: 1.5rem;">
+            <h3 style="font-family: 'Georgia', serif; font-size: 0.95rem; text-transform: uppercase; letter-spacing: 0.5px; margin: 0 0 1rem 0; color: #333;">
+                Why Join?
+            </h3>
+            <ul style="list-style: none; padding: 0; margin: 0;">
+                <li style="padding: 0.4rem 0; font-size: 0.85rem; color: #666;">✓ Create and publish articles</li>
+                <li style="padding: 0.4rem 0; font-size: 0.85rem; color: #666;">✓ Comment on posts</li>
+                <li style="padding: 0.4rem 0; font-size: 0.85rem; color: #666;">✓ Build your profile</li>
+                <li style="padding: 0.4rem 0; font-size: 0.85rem; color: #666;">✓ Track post stats</li>
+            </ul>
+        </aside>
+    </div>
+</div>
+
+<style>
+    input[type="text"],
+    input[type="email"],
+    input[type="password"] {
+        width: 100%;
+        border: 1px solid #e8e8e8;
+        padding: 0.7rem;
+        font-family: Georgia, serif;
+        font-size: 1rem;
+        color: #333;
+        background: white;
+        transition: border-color 0.3s ease;
+    }
+
+    input[type="text"]:focus,
+    input[type="email"]:focus,
+    input[type="password"]:focus {
+        outline: none;
+        border-color: #d4af37;
+        box-shadow: none;
+    }
+</style>
+{% endblock %}

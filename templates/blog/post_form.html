@@ -1,0 +1,177 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}{% if form.instance.pk %}Edit{% else %}Create{% endif %} Post - KBlog{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <!-- Main Form Container -->
+        <div style="background: white; border: 1px solid #e8e8e8; padding: 3rem 2rem; margin-bottom: 2rem;">
+            <h1 style="font-family: 'Georgia', 'Garamond', serif; font-size: 2rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 2rem; color: #333;">
+                {% if form.instance.pk %}Edit Post{% else %}Create New Post{% endif %}
+            </h1>
+
+            <form method="post" enctype="multipart/form-data" novalidate>
+                {% csrf_token %}
+
+                <!-- Title -->
+                <div style="margin-bottom: 2rem;">
+                    <label for="{{ form.title.id_for_label }}" style="display: block; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; font-size: 0.85rem; color: #333; margin-bottom: 0.5rem;">
+                        Post Title <span style="color: #d4af37;">*</span>
+                    </label>
+                    {{ form.title }}
+                    {% if form.title.errors %}
+                        <div style="color: #d4af37; font-size: 0.85rem; margin-top: 0.3rem;">{{ form.title.errors }}</div>
+                    {% endif %}
+                </div>
+
+                <!-- Slug -->
+                <div style="margin-bottom: 2rem;">
+                    <label for="{{ form.slug.id_for_label }}" style="display: block; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; font-size: 0.85rem; color: #333; margin-bottom: 0.5rem;">
+                        URL Slug
+                    </label>
+                    {{ form.slug }}
+                    <small style="display: block; color: #999; font-size: 0.85rem; margin-top: 0.3rem;">Leave empty for automatic generation</small>
+                    {% if form.slug.errors %}
+                        <div style="color: #d4af37; font-size: 0.85rem; margin-top: 0.3rem;">{{ form.slug.errors }}</div>
+                    {% endif %}
+                </div>
+
+                <!-- Excerpt -->
+                <div style="margin-bottom: 2rem;">
+                    <label for="{{ form.excerpt.id_for_label }}" style="display: block; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; font-size: 0.85rem; color: #333; margin-bottom: 0.5rem;">
+                        Excerpt
+                    </label>
+                    {{ form.excerpt }}
+                    <small style="display: block; color: #999; font-size: 0.85rem; margin-top: 0.3rem;">Brief summary that appears in listings</small>
+                    {% if form.excerpt.errors %}
+                        <div style="color: #d4af37; font-size: 0.85rem; margin-top: 0.3rem;">{{ form.excerpt.errors }}</div>
+                    {% endif %}
+                </div>
+
+                <!-- Content -->
+                <div style="margin-bottom: 2rem;">
+                    <label for="{{ form.content.id_for_label }}" style="display: block; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; font-size: 0.85rem; color: #333; margin-bottom: 0.5rem;">
+                        Post Content <span style="color: #d4af37;">*</span>
+                    </label>
+                    {{ form.content }}
+                    {% if form.content.errors %}
+                        <div style="color: #d4af37; font-size: 0.85rem; margin-top: 0.3rem;">{{ form.content.errors }}</div>
+                    {% endif %}
+                </div>
+
+                <!-- Featured Image -->
+                <div style="margin-bottom: 2rem;">
+                    <label for="{{ form.featured_image.id_for_label }}" style="display: block; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; font-size: 0.85rem; color: #333; margin-bottom: 0.5rem;">
+                        Featured Image
+                    </label>
+                    {{ form.featured_image }}
+                    {% if form.featured_image.errors %}
+                        <div style="color: #d4af37; font-size: 0.85rem; margin-top: 0.3rem;">{{ form.featured_image.errors }}</div>
+                    {% endif %}
+                    {% if form.instance.featured_image %}
+                        <div style="margin-top: 1rem;">
+                            <img src="{{ form.instance.featured_image.url }}" alt="Current featured image" style="max-width: 200px; max-height: 150px; border: 1px solid #e8e8e8; display: block;">
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Category & Status -->
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 2rem;">
+                    <div>
+                        <label for="{{ form.category.id_for_label }}" style="display: block; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; font-size: 0.85rem; color: #333; margin-bottom: 0.5rem;">
+                            Category
+                        </label>
+                        {{ form.category }}
+                        {% if form.category.errors %}
+                            <div style="color: #d4af37; font-size: 0.85rem; margin-top: 0.3rem;">{{ form.category.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div>
+                        <label for="{{ form.status.id_for_label }}" style="display: block; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; font-size: 0.85rem; color: #333; margin-bottom: 0.5rem;">
+                            Status <span style="color: #d4af37;">*</span>
+                        </label>
+                        {{ form.status }}
+                        {% if form.status.errors %}
+                            <div style="color: #d4af37; font-size: 0.85rem; margin-top: 0.3rem;">{{ form.status.errors }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Tags -->
+                <div style="margin-bottom: 2rem;">
+                    <label style="display: block; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; font-size: 0.85rem; color: #333; margin-bottom: 0.5rem;">
+                        Tags
+                    </label>
+                    <div style="border: 1px solid #e8e8e8; padding: 1rem; background: #fafafa;">
+                        {{ form.tags }}
+                        {% if form.tags.errors %}
+                            <div style="color: #d4af37; font-size: 0.85rem; margin-top: 0.3rem;">{{ form.tags.errors }}</div>
+                        {% endif %}
+                    </div>
+                    <small style="display: block; color: #999; font-size: 0.85rem; margin-top: 0.3rem;">Select one or more tags to organize your content</small>
+                </div>
+
+                <!-- Form Actions -->
+                <div style="display: flex; gap: 1rem; border-top: 1px solid #e8e8e8; padding-top: 2rem;">
+                    <button type="submit" style="background: #333; color: white; border: 1px solid #333; padding: 0.7rem 1.5rem; cursor: pointer; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px; transition: all 0.3s ease;">
+                        {% if form.instance.pk %}Update Post{% else %}Create Post{% endif %}
+                    </button>
+                    <a href="{% if form.instance.pk %}{{ form.instance.get_absolute_url }}{% else %}{% url 'blog:home' %}{% endif %}" style="background: white; color: #333; border: 1px solid #e8e8e8; padding: 0.7rem 1.5rem; text-decoration: none; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px; transition: all 0.3s ease; display: inline-block;">
+                        Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
+
+        <!-- Help Section -->
+        <aside style="background: #fafafa; border: 1px solid #e8e8e8; padding: 2rem; border-left: 4px solid #d4af37;">
+            <h3 style="font-family: 'Georgia', serif; font-size: 1.1rem; text-transform: uppercase; letter-spacing: 1px; margin: 0 0 1.5rem 0; color: #333;">
+                ✍ Writing Tips
+            </h3>
+            <ul style="list-style: none; padding: 0; margin: 0;">
+                <li style="padding: 0.5rem 0; color: #333; font-size: 0.95rem;">✓ Use clear, descriptive titles</li>
+                <li style="padding: 0.5rem 0; color: #333; font-size: 0.95rem;">✓ Write a compelling excerpt</li>
+                <li style="padding: 0.5rem 0; color: #333; font-size: 0.95rem;">✓ Add a featured image for engagement</li>
+                <li style="padding: 0.5rem 0; color: #333; font-size: 0.95rem;">✓ Use categories and tags for organization</li>
+                <li style="padding: 0.5rem 0; color: #333; font-size: 0.95rem;">✓ Save as Draft before publishing</li>
+            </ul>
+        </aside>
+    </div>
+</div>
+
+<style>
+    input[type="text"],
+    input[type="email"],
+    input[type="url"],
+    select,
+    textarea {
+        width: 100%;
+        border: 1px solid #e8e8e8;
+        padding: 0.7rem;
+        font-family: 'Georgia', serif;
+        font-size: 1rem;
+        color: #333;
+        background: white;
+        transition: border-color 0.3s ease;
+    }
+
+    input[type="text"]:focus,
+    input[type="email"]:focus,
+    input[type="url"]:focus,
+    select:focus,
+    textarea:focus {
+        outline: none;
+        border-color: #d4af37;
+        background: white;
+        box-shadow: none;
+    }
+
+    textarea {
+        min-height: 350px;
+        resize: vertical;
+    }
+</style>
+{% endblock %}

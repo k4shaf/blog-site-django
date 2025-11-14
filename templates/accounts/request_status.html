@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+{% block title %}Author Request Status - KBlog{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-lg">
+                <div class="card-header {% if status == 'approved' %}bg-success{% elif status == 'pending' %}bg-warning{% else %}bg-info{% endif %} text-white">
+                    <h3 class="mb-0"><i class="fas fa-status"></i> Author Request Status</h3>
+                </div>
+                <div class="card-body text-center">
+                    {% if status == 'approved' %}
+                        <div class="mb-4">
+                            <i class="fas fa-check-circle" style="font-size: 4rem; color: #28a745;"></i>
+                        </div>
+                        <h4 class="text-success mb-3">Congratulations!</h4>
+                        <p class="lead mb-4">Your author role request has been approved!</p>
+                        <p class="text-muted mb-4">You can now create and publish blog posts on KBlog.</p>
+                        <div class="d-grid gap-2">
+                            <a href="{% url 'blog:post_create' %}" class="btn btn-success btn-lg">
+                                <i class="fas fa-plus-circle"></i> Write Your First Post
+                            </a>
+                            <a href="{% url 'accounts:dashboard' %}" class="btn btn-outline-success">
+                                <i class="fas fa-chart-line"></i> View Dashboard
+                            </a>
+                        </div>
+
+                    {% elif status == 'pending' %}
+                        <div class="mb-4">
+                            <i class="fas fa-hourglass-half" style="font-size: 4rem; color: #ffc107;"></i>
+                        </div>
+                        <h4 class="text-warning mb-3">Request Pending</h4>
+                        <p class="lead mb-4">Your author role request is under review.</p>
+                        <p class="text-muted mb-4">
+                            Our admin team is reviewing your request. This usually takes less than 24 hours. 
+                            We'll notify you once a decision is made.
+                        </p>
+                        <div class="d-grid gap-2">
+                            <a href="{% url 'blog:home' %}" class="btn btn-warning">
+                                <i class="fas fa-home"></i> Back to Home
+                            </a>
+                        </div>
+
+                    {% else %}
+                        <div class="mb-4">
+                            <i class="fas fa-question-circle" style="font-size: 4rem; color: #17a2b8;"></i>
+                        </div>
+                        <h4 class="text-info mb-3">No Request Yet</h4>
+                        <p class="lead mb-4">You haven't requested author privileges yet.</p>
+                        <p class="text-muted mb-4">Ready to start publishing? Request your author role to create and share blog posts.</p>
+                        <div class="d-grid gap-2">
+                            <a href="{% url 'accounts:request_author' %}" class="btn btn-info btn-lg">
+                                <i class="fas fa-arrow-up"></i> Request Author Role
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

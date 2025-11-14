@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}KBlog{% endblock %}</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-color: #f5f1ed;
+            --text-color: #333;
+            --light-gray: #e8e8e8;
+            --accent: #d4af37;
+            --white: #fff;
+        }
+
+        html, body {
+            height: 100%;
+        }
+
+        body {
+            font-family: 'Georgia', 'Garamond', serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+        }
+
+        /* Navbar */
+        .navbar {
+            background-color: var(--bg-color);
+            border-bottom: 1px solid var(--light-gray);
+            padding: 1.5rem 0;
+        }
+
+        .navbar-brand {
+            font-size: 1.3rem;
+            font-weight: 700;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--text-color) !important;
+        }
+
+        .nav-link {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-color) !important;
+            margin-left: 2rem;
+            transition: color 0.3s ease;
+        }
+
+        .nav-link:hover {
+            color: var(--accent) !important;
+        }
+
+        .dropdown-menu {
+            border: 1px solid var(--light-gray);
+            background-color: var(--white);
+            border-radius: 0;
+        }
+
+        .dropdown-item {
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 0.5px;
+            color: var(--text-color);
+        }
+
+        .dropdown-item:hover,
+        .dropdown-item:focus {
+            background-color: var(--bg-color);
+            color: var(--accent);
+        }
+
+        /* Buttons */
+        .btn-primary {
+            background-color: var(--text-color);
+            border: 2px solid var(--text-color);
+            color: var(--white);
+            text-transform: uppercase;
+            font-weight: 600;
+            letter-spacing: 1px;
+            padding: 0.6rem 1.5rem;
+            transition: all 0.3s ease;
+            border-radius: 0;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--accent);
+            border-color: var(--accent);
+            color: var(--text-color);
+        }
+
+        .btn-outline-primary {
+            border: 2px solid var(--text-color);
+            color: var(--text-color);
+            text-transform: uppercase;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        .btn-outline-primary:hover {
+            background-color: var(--text-color);
+            color: var(--white);
+        }
+
+        /* Form */
+        .form-control, .form-select {
+            border: 1px solid var(--light-gray);
+            padding: 0.8rem;
+            border-radius: 0;
+            font-size: 0.95rem;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--accent);
+            box-shadow: none;
+        }
+
+        .form-label {
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.5rem;
+        }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container-lg">
+            <a class="navbar-brand" href="{% url 'blog:home' %}">
+                KBlog
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'blog:home' %}">HOME</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'blog:search' %}">BLOG</a>
+                    </li>
+                    {% if user.is_authenticated %}
+                        {% if user.profile.is_author %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'blog:post_create' %}">WRITE</a>
+                            </li>
+                        {% endif %}
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" style="text-transform: none; letter-spacing: 0;">
+                                {{ user.first_name|default:user.username }}
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li><a class="dropdown-item" href="{% url 'accounts:profile' %}">My Profile</a></li>
+                                {% if user.profile.is_author %}
+                                    <li><a class="dropdown-item" href="{% url 'accounts:dashboard' %}">Dashboard</a></li>
+                                {% endif %}
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="{% url 'accounts:logout' %}">Logout</a></li>
+                            </ul>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'accounts:register' %}">REGISTER</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'accounts:login' %}">LOGIN</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Messages -->
+    {% if messages %}
+        <div class="container-lg mt-3">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <!-- Main Content -->
+    <main class="container-lg">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="mt-5" style="background-color: var(--white); border-top: 1px solid var(--light-gray); padding: 3rem 0;">
+        <div class="container-lg">
+            <div class="row">
+                <div class="col-md-3">
+                    <h5 style="font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; font-weight: 700; margin-bottom: 1.5rem;">About</h5>
+                    <p style="font-size: 0.9rem; color: #666;">A minimal and modern blogging platform for writers and creators.</p>
+                </div>
+                <div class="col-md-3">
+                    <h5 style="font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; font-weight: 700; margin-bottom: 1.5rem;">Navigation</h5>
+                    <ul style="list-style: none;">
+                        <li><a href="{% url 'blog:home' %}" style="font-size: 0.9rem; color: var(--text-color); text-decoration: none; transition: color 0.3s ease;">Home</a></li>
+                        <li><a href="{% url 'blog:search' %}" style="font-size: 0.9rem; color: var(--text-color); text-decoration: none; transition: color 0.3s ease;">Blog</a></li>
+                        {% if user.is_authenticated %}
+                            <li><a href="{% url 'accounts:profile' %}" style="font-size: 0.9rem; color: var(--text-color); text-decoration: none; transition: color 0.3s ease;">Profile</a></li>
+                        {% endif %}
+                    </ul>
+                </div>
+                <div class="col-md-3">
+                    <h5 style="font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; font-weight: 700; margin-bottom: 1.5rem;">Follow</h5>
+                    <div style="display: flex; gap: 1rem;">
+                        <a href="#" style="font-size: 1.2rem; color: var(--text-color); text-decoration: none;"><i class="fab fa-twitter"></i></a>
+                        <a href="#" style="font-size: 1.2rem; color: var(--text-color); text-decoration: none;"><i class="fab fa-facebook"></i></a>
+                        <a href="#" style="font-size: 1.2rem; color: var(--text-color); text-decoration: none;"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+            </div>
+            <hr style="margin: 2rem 0; border-color: var(--light-gray);">
+            <div style="text-align: center; color: #999; font-size: 0.85rem;">
+                <p>&copy; 2025 KBlog. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
